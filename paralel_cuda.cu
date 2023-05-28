@@ -70,6 +70,28 @@ void MatrixMultiplication(float *M, float *N, float *P, int Width)
     cudaFree(Pd);
 }
 
+void verify(float *A, float *B, float *C, unsigned int m, unsigned int k, unsigned int n) {
+    const float relativeTolerance = 1e-6;
+
+    for(int row = 0; row < m; ++row) {
+        for(int col = 0; col < n; ++col) {
+            float sum = 0;
+            for(unsigned int i = 0; i < k; ++i) {
+              sum += A[row*k + i]*B[i*n + col];
+            }
+
+            float relativeError = (sum - C[row*n + col])/sum;
+            if (relativeError > relativeTolerance
+                || relativeError < -relativeTolerance) {
+            	printf("(%d, %d) = %f, supposed to be %f\n", row, col, C[row*n + col], sum); 
+                printf("TEST FAILED\n\n");
+                exit(0);
+            }
+        }
+    }
+    printf("TEST PASSED\n\n");
+}
+
 int main(int argc, char** argv) 
 {
 
@@ -78,23 +100,23 @@ int main(int argc, char** argv)
 	const int Width = atoi(argv[1]);
     float M[Width*Width], N[Width*Width], P[Width*Width];
 
-    for (int i = 0; i < Width; i++) {
-        for (int j = 0; j < Width; j++) {
-            M[i * Width + j] = i;
-            N[i * Width + j] = j;
-            P[i * Width + j] = 0;
-        }
+    for (int i = 0; i < Width * Width; i++) {
+        M[i] = (rand()%100)/100.00;
+        N[i] = (rand()%100)/100.00;
+        P[i] = 0;
     }
 
     MatrixMultiplication(M, N, P, Width);
-    for (int i = 0; i < Width; i++) {
-        for (int j = 0; j < Width; j++) {
-            printf("%f \t", P[i * Width + j]);
-        }
-        printf("\n")
-    }
+    // for (int i = 0; i < Width; i++) {
+    //     for (int j = 0; j < Width; j++) {
+    //         printf("%f \t", P[i * Width + j]);
+    //     }
+    //     printf("\n")
+    // }
 
 	printf("Computation time of GPU: %f ms.\n This is a change", elapsed_time_ms);  // exe. time
+
+    verify(M, N, P, Width, Width, Width);
 
     return 0;
 }

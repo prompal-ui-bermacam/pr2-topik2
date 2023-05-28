@@ -27,12 +27,12 @@ int main(int argc, char** argv)
 	    }
     }
 
-    for(i=0;i<N;i++){
-        for(j=0;j<N;j++){
-            printf("%d ",c[i][j]);
-        }
-        printf("\n");
-    }
+    // for(i=0;i<N;i++){
+    //     for(j=0;j<N;j++){
+    //         printf("%d ",c[i][j]);
+    //     }
+    //     printf("\n");
+    // }
     end = clock();
 
     cpu_time= ((double) (end - start)) / CLOCKS_PER_SEC;
