@@ -1,0 +1,3 @@
+[submodule "paralel_cublas"]
+	path = paralel_cublas
+	url = git@github.com:zpzim/MSplitGEMM.git
